@@ -3,6 +3,7 @@ package com.example.ruan.ceep.ui.recyclerview.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,11 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
     @Override
     public int getItemCount() {
         return notaList.size();
+    }
+
+    public void adiciona(Nota nota){
+        notaList.add(nota);
+        this.notifyDataSetChanged();
     }
 
     class NotaViewHolder extends RecyclerView.ViewHolder{

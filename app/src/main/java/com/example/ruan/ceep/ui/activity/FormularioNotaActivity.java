@@ -1,5 +1,6 @@
 package com.example.ruan.ceep.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,8 +34,16 @@ public class FormularioNotaActivity extends AppCompatActivity {
                 EditText titulo = findViewById(R.id.formulario_nota_titulo);
                 EditText descricao = findViewById(R.id.formulario_nota_descricao);
                 Nota nota = new Nota(titulo.getText().toString(), descricao.getText().toString());
-                NotaDAO notaDAO = new NotaDAO();
-                notaDAO.insere(nota);
+
+// // passamos a responsabilidade de inserir a nota para a ListaNotasActivity, já que passamos a nota
+// // como parâmetro para a activity que nos chamou
+//                NotaDAO notaDAO = new NotaDAO();
+//                notaDAO.insere(nota);
+
+                // estamos enviando o resultado para a activity que chamou este formulário
+                Intent resultadoInsercao = new Intent();
+                resultadoInsercao.putExtra("nota", nota);
+                setResult(2, resultadoInsercao);
                 finish();
                 break;
         }
