@@ -1,9 +1,12 @@
 package com.example.ruan.ceep.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.ruan.ceep.R;
 import com.example.ruan.ceep.dao.NotaDAO;
@@ -14,26 +17,30 @@ import java.util.List;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
+    private NotaDAO dao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        List<Nota> todasNotas = notasDeExemplo();
+        dao = new NotaDAO();
+        notasDeExemplo();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        List<Nota> todasNotas = dao.todos();
         configuraRecyclerView(todasNotas);
     }
 
-    private List<Nota> notasDeExemplo() {
-
-        NotaDAO dao = new NotaDAO();
-
+    private void notasDeExemplo() {
         dao.insere(
                 new Nota("Primeira nota", "Descrição pequena"),
                 new Nota("Segunda nota", "Esta segunda descrição é bem maior que a da primeira nota")
         );
-
-        return dao.todos();
     }
 
     private void configuraRecyclerView(List<Nota> todasNotas) {
@@ -54,5 +61,15 @@ public class ListaNotasActivity extends AppCompatActivity {
 //
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        listaNotas.setLayoutManager(linearLayoutManager);
+
+        TextView campoInsereNotas = findViewById(R.id.lista_notas_insere_nota);
+        campoInsereNotas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =
+                        new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
