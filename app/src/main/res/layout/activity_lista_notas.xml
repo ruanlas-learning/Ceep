@@ -7,6 +7,7 @@
     tools:context=".ui.activity.ListaNotasActivity">
 
     <android.support.v7.widget.RecyclerView
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         android:id="@+id/lista_notas_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -15,6 +16,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_nota" />
+
+    <!--
+        o atributo [ app:layoutManager ] permite definir um gerenciador de layout para
+        o RecyclerView no próprio xml, não havendo necessidade de definir isso via código.
+        Existem 3 tipos padrões de layouts: o LinearLayoutManager, o GridLayoutManager e o
+        StaggeredGridLayoutManager.
+        Para o GridLayoutManager e o StaggeredGridLayoutManager, existem também o atributo
+        [ app:spanCount ] que permite definir o número de colunas que o layout terá
+    -->
 
     <View android:id="@+id/lista_notas_fundo_gradiente_inferior"
         android:layout_width="0dp"

@@ -19,27 +19,40 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
+        List<Nota> todasNotas = notasDeExemplo();
+
+        configuraRecyclerView(todasNotas);
+    }
+
+    private List<Nota> notasDeExemplo() {
 
         NotaDAO dao = new NotaDAO();
-        for (int i = 1; i <= 10000; i++){
-            dao.insere(
-                    new Nota("Título "+ i, "Descrição " + i)
-            );
-        }
 
-        List<Nota> todasNotas = dao.todos();
+        dao.insere(
+                new Nota("Primeira nota", "Descrição pequena"),
+                new Nota("Segunda nota", "Esta segunda descrição é bem maior que a da primeira nota")
+        );
 
+        return dao.todos();
+    }
+
+    private void configuraRecyclerView(List<Nota> todasNotas) {
+
+        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
 //        ListaNotasAdapter adapter = new ListaNotasAdapter(this, todasNotas);
 
         ListaNotasRecyclerViewAdapter recyclerViewAdapter =
                 new ListaNotasRecyclerViewAdapter(todasNotas, this);
 
         listaNotas.setAdapter(recyclerViewAdapter);
-        // é necessário indicar em qual tipo de layout (Gerenciador de Layout) queremos
-        // apresentar os itens do RecyclerView. Por padrão, o RecyclerView já implementa
-        // alguns layouts managers, como o LinearLayoutManager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        listaNotas.setLayoutManager(linearLayoutManager);
+
+//        // é necessário indicar em qual tipo de layout (Gerenciador de Layout) queremos
+//        // apresentar os itens do RecyclerView. Por padrão, o RecyclerView já implementa
+//        // alguns layouts managers, como o LinearLayoutManager, o GridLayoutManager
+//        // e o StaggeredGridLayoutManager
+//        // OBS: (Podemos fazer essa indicação via código ou via XML)
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        listaNotas.setLayoutManager(linearLayoutManager);
     }
 }

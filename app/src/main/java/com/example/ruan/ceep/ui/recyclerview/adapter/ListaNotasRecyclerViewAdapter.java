@@ -13,10 +13,11 @@ import com.example.ruan.ceep.model.Nota;
 
 import java.util.List;
 
-public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
+//public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
+public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNotasRecyclerViewAdapter.NotaViewHolder> {
 
-    private List<Nota> notaList;
-    private Context context;
+    private final List<Nota> notaList;
+    private final Context context;
 
     public ListaNotasRecyclerViewAdapter(List<Nota> notaList, Context context) {
         this.notaList = notaList;
@@ -25,7 +26,7 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListaNotasRecyclerViewAdapter.NotaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Este método tem a ideia de basicamente criar as views dos itens da lista (ViewHolder)
         // Ele cria inicialmente todas as views necessárias para fazer a reciclagem delas depois
 
@@ -36,18 +37,15 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ListaNotasRecyclerViewAdapter.NotaViewHolder viewHolder, int position) {
         // Este método tem a ideia de popular as views com os dados do objeto (popular o ViewHolder)
         // Depois de criado todas as ViewsHolders, este método irá populá-las à medida que ele os recebe
 
         Nota nota = notaList.get(position);
-        TextView titulo = viewHolder.itemView.findViewById(R.id.item_nota_titulo);
-        titulo.setText(nota.getTitulo());
 
-        TextView descricao = viewHolder.itemView.findViewById(R.id.item_nota_descricao);
-        descricao.setText(nota.getDescricao());
-
-
+//        NotaViewHolder notaViewHolder = (NotaViewHolder) viewHolder;
+//        notaViewHolder.vincula(nota);
+        viewHolder.vincula(nota);
     }
 
     @Override
@@ -57,8 +55,17 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
 
     class NotaViewHolder extends RecyclerView.ViewHolder{
 
+        private final TextView titulo, descricao;
+
         public NotaViewHolder(@NonNull View itemView) {
             super(itemView);
+            titulo = itemView.findViewById(R.id.item_nota_titulo);
+            descricao = itemView.findViewById(R.id.item_nota_descricao);
+        }
+
+        public void vincula(Nota nota){
+            titulo.setText(nota.getTitulo());
+            descricao.setText(nota.getDescricao());
         }
     }
 }
