@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -14,13 +13,16 @@ import com.example.ruan.ceep.dao.NotaDAO;
 import com.example.ruan.ceep.model.Nota;
 import com.example.ruan.ceep.ui.recyclerview.adapter.ListaNotasRecyclerViewAdapter;
 
-import java.io.Serializable;
 import java.util.List;
+
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_REQUISICAO_INSERE_NOTA;
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
     private NotaDAO dao;
-    private List<Nota> todasNotas;
+//    private List<Nota> todasNotas;
     private ListaNotasRecyclerViewAdapter recyclerViewAdapter;
 
     @Override
@@ -28,8 +30,15 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
 
-        todasNotas = notasDeExemplo();
+        List<Nota> todasNotas = pegaTodasAsNotas();
+
         configuraRecyclerView(todasNotas);
+        configuraCampoInsereNotas();
+    }
+
+    private List<Nota> pegaTodasAsNotas() {
+        dao = new NotaDAO();
+        return dao.todos();
     }
 
     @Override
@@ -48,7 +57,6 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private List<Nota> notasDeExemplo() {
-        dao = new NotaDAO();
         dao.insere(
                 new Nota("Primeira nota", "Descrição pequena"),
                 new Nota("Segunda nota", "Esta segunda descrição é bem maior que a da primeira nota")
@@ -75,7 +83,9 @@ public class ListaNotasActivity extends AppCompatActivity {
 //
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        listaNotas.setLayoutManager(linearLayoutManager);
+    }
 
+    private void configuraCampoInsereNotas() {
         TextView campoInsereNotas = findViewById(R.id.lista_notas_insere_nota);
         campoInsereNotas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +97,7 @@ public class ListaNotasActivity extends AppCompatActivity {
                 // resultado deste formulário, e estamos identificando esta requisição da chamada do
                 // formulario com o requestCode de valor 1. Ou seja, quando o requestCode for igual
                 // a 1, significa que foi daqui que a activity foi chamada
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, CODIGO_REQUISICAO_INSERE_NOTA);
             }
         });
     }
@@ -101,12 +111,34 @@ public class ListaNotasActivity extends AppCompatActivity {
         // resultCode = Código do resultado da activity que finalizou
         // data = dados que a activity que foi finalizada enviou
 
-        if (requestCode == 1 && resultCode == 2 && data.hasExtra("nota")){
-            Nota notaRecebida = (Nota)data.getSerializableExtra("nota");
-            dao.insere(notaRecebida);
-            recyclerViewAdapter.adiciona(notaRecebida);
+        if ( ehResultadoComNota(requestCode, resultCode, data) ) {
+            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+            adicionaNota(notaRecebida);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void adicionaNota(Nota notaRecebida) {
+        dao.insere(notaRecebida);
+        recyclerViewAdapter.adiciona(notaRecebida);
+    }
+
+    private boolean ehResultadoComNota(int requestCode, int resultCode, @Nullable Intent data) {
+        return ehCodigoRequisicaoInsereNota(requestCode) &&
+                ehCodigoResultadoNotaCriada(resultCode) &&
+                temNota(data);
+    }
+
+    private boolean temNota(@Nullable Intent data) {
+        return data.hasExtra(CHAVE_NOTA);
+    }
+
+    private boolean ehCodigoResultadoNotaCriada(int resultCode) {
+        return resultCode == CODIGO_RESULTADO_NOTA_CRIADA;
+    }
+
+    private boolean ehCodigoRequisicaoInsereNota(int requestCode) {
+        return requestCode == CODIGO_REQUISICAO_INSERE_NOTA;
     }
 }
