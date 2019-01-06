@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ruan.ceep.R;
 import com.example.ruan.ceep.dao.NotaDAO;
 import com.example.ruan.ceep.model.Nota;
 import com.example.ruan.ceep.ui.recyclerview.adapter.ListaNotasRecyclerViewAdapter;
+import com.example.ruan.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private List<Nota> pegaTodasAsNotas() {
         dao = new NotaDAO();
+        notasDeExemplo();
         return dao.todos();
     }
 
@@ -66,12 +69,14 @@ public class ListaNotasActivity extends AppCompatActivity {
 //        recyclerViewAdapter.notifyDataSetChanged();
     }
 
-    private List<Nota> notasDeExemplo() {
+    private void notasDeExemplo() {
         dao.insere(
                 new Nota("Primeira nota", "Descrição pequena"),
                 new Nota("Segunda nota", "Esta segunda descrição é bem maior que a da primeira nota")
         );
-        return dao.todos();
+        for (int i = 1; i < 10; i++){
+            dao.insere(new Nota("Nota nº"+i, "Descrição nº" + i));
+        }
     }
 
     private void configuraRecyclerView(List<Nota> todasNotas) {
@@ -84,6 +89,12 @@ public class ListaNotasActivity extends AppCompatActivity {
                 new ListaNotasRecyclerViewAdapter(todasNotas, this);
 
         listaNotas.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Nota nota) {
+                Toast.makeText(ListaNotasActivity.this, nota.getTitulo(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        // é necessário indicar em qual tipo de layout (Gerenciador de Layout) queremos
 //        // apresentar os itens do RecyclerView. Por padrão, o RecyclerView já implementa

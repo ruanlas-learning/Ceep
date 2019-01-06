@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ruan.ceep.R;
 import com.example.ruan.ceep.model.Nota;
+import com.example.ruan.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
 import java.util.List;
 
@@ -19,10 +21,15 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
 
     private final List<Nota> notaList;
     private final Context context;
+    private OnItemClickListener onItemClickListener;
 
     public ListaNotasRecyclerViewAdapter(List<Nota> notaList, Context context) {
         this.notaList = notaList;
         this.context = context;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -62,14 +69,26 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
     class NotaViewHolder extends RecyclerView.ViewHolder{
 
         private final TextView titulo, descricao;
+        private Nota nota;
 
         public NotaViewHolder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.item_nota_titulo);
             descricao = itemView.findViewById(R.id.item_nota_descricao);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(nota);
+                }
+            });
         }
 
         public void vincula(Nota nota){
+            this.nota = nota;
+            preencheCampo(nota);
+        }
+
+        private void preencheCampo(Nota nota) {
             titulo.setText(nota.getTitulo());
             descricao.setText(nota.getDescricao());
         }
