@@ -19,6 +19,16 @@ import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOT
 import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_REQUISICAO_INSERE_NOTA;
 import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
 
+
+/*
+ *
+ * É uma estratégia bem bacana para otimizar a performance da App. Algo que por padrão não
+ * conseguimos fazer no ListView, mas é possível customizar. Caso não consiga migrar para o
+ * RecyclerView, no link a seguir há uma referência para desenvolver com o ListView, de forma
+ * otimizada. url => http://blog.alura.com.br/utilizando-o-padrao-viewholder/
+ *
+ */
+
 public class ListaNotasActivity extends AppCompatActivity {
 
     private NotaDAO dao;
