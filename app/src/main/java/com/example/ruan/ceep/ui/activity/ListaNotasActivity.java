@@ -1,6 +1,8 @@
 package com.example.ruan.ceep.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,8 +20,10 @@ import com.example.ruan.ceep.ui.recyclerview.adapter.listener.OnItemClickListene
 import java.util.List;
 
 import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_REQUISICAO_ALTERA_NOTA;
 import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_REQUISICAO_INSERE_NOTA;
-import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
+import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.POSICAO_INVALIDA;
 
 
 /*
@@ -94,8 +98,8 @@ public class ListaNotasActivity extends AppCompatActivity {
             public void onItemClick(Nota nota, int posicao) {
                 Intent intent = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
                 intent.putExtra(CHAVE_NOTA, nota);
-                intent.putExtra("posicao", posicao);
-                startActivityForResult(intent, 2);
+                intent.putExtra(CHAVE_POSICAO, posicao);
+                startActivityForResult(intent, CODIGO_REQUISICAO_ALTERA_NOTA);
             }
         });
 
@@ -135,19 +139,44 @@ public class ListaNotasActivity extends AppCompatActivity {
         // resultCode = Código do resultado da activity que finalizou
         // data = dados que a activity que foi finalizada enviou
 
-        if ( ehResultadoComNota(requestCode, resultCode, data) ) {
-            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            adicionaNota(notaRecebida);
+        if ( ehResultadoInsereNota(requestCode, data) ) {
+            if ( resultadoOk(resultCode) ){
+                Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                adicionaNota(notaRecebida);
+            }
         }
 
-        if (requestCode == 2 && resultCode == CODIGO_RESULTADO_NOTA_CRIADA && temNota(data) && data.hasExtra("posicao")){
-            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            int posicaoRecebida = data.getIntExtra("posicao", -1);
-            dao.altera(posicaoRecebida,notaRecebida);
-            recyclerViewAdapter.altera(posicaoRecebida, notaRecebida);
+        if ( ehResultadoAlteraNota(requestCode, data) ){
+            if ( resultadoOk(resultCode) ){
+                Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                int posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
+                if ( ehPosicaoValida(posicaoRecebida) ){
+                    altera(notaRecebida, posicaoRecebida);
+                }else {
+                    Toast.makeText(this, "Ocorreu um problema na alteração da nota", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void altera(Nota nota, int posicao) {
+        dao.altera(posicao, nota);
+        recyclerViewAdapter.altera(posicao, nota);
+    }
+
+    private boolean ehPosicaoValida(int posicaoRecebida) {
+        return posicaoRecebida != POSICAO_INVALIDA;
+    }
+
+    private boolean ehResultadoAlteraNota(int requestCode, @NonNull Intent data) {
+        return ehCodigoRequisicaoAlteraNota(requestCode) &&
+                temNota(data);
+    }
+
+    private boolean ehCodigoRequisicaoAlteraNota(int requestCode) {
+        return requestCode == CODIGO_REQUISICAO_ALTERA_NOTA;
     }
 
     private void adicionaNota(Nota notaRecebida) {
@@ -155,9 +184,8 @@ public class ListaNotasActivity extends AppCompatActivity {
         recyclerViewAdapter.adiciona(notaRecebida);
     }
 
-    private boolean ehResultadoComNota(int requestCode, int resultCode, @Nullable Intent data) {
+    private boolean ehResultadoInsereNota(int requestCode, @Nullable Intent data) {
         return ehCodigoRequisicaoInsereNota(requestCode) &&
-                ehCodigoResultadoNotaCriada(resultCode) &&
                 temNota(data);
     }
 
@@ -165,8 +193,8 @@ public class ListaNotasActivity extends AppCompatActivity {
         return data.hasExtra(CHAVE_NOTA);
     }
 
-    private boolean ehCodigoResultadoNotaCriada(int resultCode) {
-        return resultCode == CODIGO_RESULTADO_NOTA_CRIADA;
+    private boolean resultadoOk(int resultCode) {
+        return resultCode == Activity.RESULT_OK;
     }
 
     private boolean ehCodigoRequisicaoInsereNota(int requestCode) {
