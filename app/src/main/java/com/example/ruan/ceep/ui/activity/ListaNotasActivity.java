@@ -144,6 +144,9 @@ public class ListaNotasActivity extends AppCompatActivity {
                 Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
                 adicionaNota(notaRecebida);
             }
+//            else if (resultCode == Activity.RESULT_CANCELED){
+//                // tomar uma ação de cancelamento
+//            }
         }
 
         if ( ehResultadoAlteraNota(requestCode, data) ){
