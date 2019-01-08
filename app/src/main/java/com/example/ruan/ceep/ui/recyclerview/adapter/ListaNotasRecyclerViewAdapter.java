@@ -14,6 +14,7 @@ import com.example.ruan.ceep.R;
 import com.example.ruan.ceep.model.Nota;
 import com.example.ruan.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
+import java.util.Collections;
 import java.util.List;
 
 //public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter {
@@ -68,6 +69,17 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
 
     public void altera(int posicao, Nota nota) {
         notaList.set(posicao, nota);
+        notifyDataSetChanged();
+    }
+
+    public void remove(int posicao) {
+        notaList.remove(posicao);
+        notifyDataSetChanged();
+    }
+
+    public void troca(int posicaoInicial, int posicaoFinal) {
+        // este método swap faz a troca de posição dos elementos na Collection
+        Collections.swap(notaList, posicaoInicial, posicaoFinal);
         notifyDataSetChanged();
     }
 

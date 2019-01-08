@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.example.ruan.ceep.dao.NotaDAO;
 import com.example.ruan.ceep.model.Nota;
 import com.example.ruan.ceep.ui.recyclerview.adapter.ListaNotasRecyclerViewAdapter;
 import com.example.ruan.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
+import com.example.ruan.ceep.ui.recyclerview.helper.callback.NotaItemTouchHelperCallback;
 
 import java.util.List;
 
@@ -103,6 +105,8 @@ public class ListaNotasActivity extends AppCompatActivity {
             }
         });
 
+        configuraItemTouchHelper(listaNotas);
+
 //        // é necessário indicar em qual tipo de layout (Gerenciador de Layout) queremos
 //        // apresentar os itens do RecyclerView. Por padrão, o RecyclerView já implementa
 //        // alguns layouts managers, como o LinearLayoutManager, o GridLayoutManager
@@ -111,6 +115,12 @@ public class ListaNotasActivity extends AppCompatActivity {
 //
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        listaNotas.setLayoutManager(linearLayoutManager);
+    }
+
+    private void configuraItemTouchHelper(RecyclerView listaNotas) {
+        ItemTouchHelper itemTouchHelper =
+                new ItemTouchHelper(new NotaItemTouchHelperCallback(recyclerViewAdapter));
+        itemTouchHelper.attachToRecyclerView(listaNotas);
     }
 
     private void configuraCampoInsereNotas() {
@@ -193,7 +203,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private boolean temNota(@Nullable Intent data) {
-        return data.hasExtra(CHAVE_NOTA);
+        return (data != null && data.hasExtra(CHAVE_NOTA));
     }
 
     private boolean resultadoOk(int resultCode) {
