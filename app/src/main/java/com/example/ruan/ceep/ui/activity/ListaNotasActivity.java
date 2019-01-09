@@ -39,6 +39,7 @@ import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.POSICAO_I
 
 public class ListaNotasActivity extends AppCompatActivity {
 
+    public static final String TITULO_APPBAR = "Notas";
     private NotaDAO dao;
 //    private List<Nota> todasNotas;
     private ListaNotasRecyclerViewAdapter recyclerViewAdapter;
@@ -56,13 +57,14 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private List<Nota> pegaTodasAsNotas() {
         dao = new NotaDAO();
-        notasDeExemplo();
+//        notasDeExemplo();
         return dao.todos();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        setTitle(TITULO_APPBAR);
 //
 //  Como implementamos o onActivityResult(), este trecho abaixo que atualiza
 //  a lista do adapter não é mais necessário

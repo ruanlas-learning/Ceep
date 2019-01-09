@@ -20,6 +20,8 @@ import static com.example.ruan.ceep.ui.activity.NotaActivityConstantes.POSICAO_I
 
 public class FormularioNotaActivity extends AppCompatActivity {
 
+    public static final String TITULO_APPBAR_ALTERA = "Altera nota";
+    public static final String TITULO_APPBAR_INSERE = "Insere nota";
     private int posicaoRecebida = POSICAO_INVALIDA;
 
     private TextView titulo, descricao;
@@ -31,8 +33,10 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
         inicializaCampos();
 
+        setTitle(TITULO_APPBAR_INSERE);
         Intent dadosRecebidos = getIntent();
         if ( dadosRecebidos.hasExtra(CHAVE_NOTA) ){
+            setTitle(TITULO_APPBAR_ALTERA);
             Nota notaRecebida = (Nota)dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
             posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
 

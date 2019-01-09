@@ -70,17 +70,20 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
     public void altera(int posicao, Nota nota) {
         notaList.set(posicao, nota);
         notifyDataSetChanged();
+//        notifyItemChanged(posicao);
     }
 
     public void remove(int posicao) {
         notaList.remove(posicao);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
+        notifyItemRemoved(posicao);
     }
 
     public void troca(int posicaoInicial, int posicaoFinal) {
         // este método swap faz a troca de posição dos elementos na Collection
         Collections.swap(notaList, posicaoInicial, posicaoFinal);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
+        notifyItemMoved(posicaoInicial, posicaoFinal);
     }
 
     class NotaViewHolder extends RecyclerView.ViewHolder{
@@ -111,3 +114,20 @@ public class ListaNotasRecyclerViewAdapter extends RecyclerView.Adapter<ListaNot
         }
     }
 }
+/*
+*
+* Além das animações para o Adapter que comentei, temos outras animações para ações que envolve um
+* range da lista. Por exemplo: suponhamos que você queira filtrar elementos. Para isso, primeiro
+* removeria todos os elementos e apresentaria apenas os desejados.
+*
+* Para manter uma animação fluída no momento que todos os elementos são removidos, podemos usar a
+* notificação notifyItemRangeRemoved(), enviando a posição inicial e final do range. Da mesma maneira,
+* para exibir todos novamente, existe o notifyItemRangeInserted()...
+*
+* Perceba que temos diversas possibilidades dentro do Adapter do RecyclerView, caso tenha interesse
+* em aprender mais técnicas, recomendo que dê uma olhada na documentação e explore as demais
+* possibilidades.
+* Documentação: https://developer.android.com/reference/android/support/v7/widget/RecyclerView.Adapter
+*
+*
+* */
